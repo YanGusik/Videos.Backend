@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  videos.webapi:
+    image: ${DOCKER_REGISTRY-}videoswebapi
+    build:
+      context: .
+      dockerfile: Videos.WebApi/Dockerfile
+    networks:
+    - videos-network
+
+  videos.db:
+    image: postgres:latest
+    volumes:
+      - ./videos_db:/var/lib/postgresql/data
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: videos
+      POSTGRES_USER: localking
+      POSTGRES_PASSWORD: localking
+    networks:
+      - videos-network
+
+networks:
+  videos-network:
+    driver: bridge
